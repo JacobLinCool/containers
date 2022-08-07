@@ -1,28 +1,16 @@
 version: "3.9"
 
 services:
-    docker-manager:
-        build:
-            context: .
-            target: docker-manager
-        runtime: sysbox-runc
-        container_name: docker-manager
-        volumes:
-            - docker-manager-cache:/var/lib/docker
-        expose:
-            - 2375
-            - 2376
-        restart: always
     workspace:
         image: ghcr.io/jacoblincool/workspace:latest
         runtime: sysbox-runc
         container_name: workspace
+        command: dockerd > /dockerd.log 2>&1 & sleep infinity
         volumes:
             - workspace-volume:/workspace
-        environment:
-            DOCKER_HOST: tcp://docker-manager:2375
+            - docker-cache:/var/lib/docker
         restart: always
 
 volumes:
-    docker-manager-cache: {}
+    docker-cache: {}
     workspace-volume: {}
