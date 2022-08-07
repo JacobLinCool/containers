@@ -2,7 +2,7 @@ version: "3.9"
 
 services:
     workspace:
-        image: ghcr.io/jacoblincool/workspace:latest
+        image: ghcr.io/jacoblincool/workspace-ssh:latest
         runtime: sysbox-runc
         container_name: workspace
         command: dockerd > /dockerd.log 2>&1 & sleep infinity
