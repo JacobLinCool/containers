@@ -6,3 +6,8 @@ services:
             context: .
             target: workspace
         image: ghcr.io/jacoblincool/workspace:latest
+    workspace-ssh:
+        build:
+            context: .
+            target: workspace-ssh
+        image: ghcr.io/jacoblincool/workspace-ssh:latest

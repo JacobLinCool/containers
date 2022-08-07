@@ -10,7 +10,7 @@ ENV PNPM_HOME="/root/.local/share/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
 
 RUN rm -f /bin/sh && ln -s /bin/bash /bin/sh
-RUN apt update && apt upgrade -y && apt -y install git curl tree make python3 gcc g++ && apt autoremove -y
+RUN apt update && apt upgrade -y && apt install -y git curl tree make python3 gcc g++ && apt autoremove -y
 RUN rm -f /usr/bin/python && ln -s /usr/bin/python3 /usr/bin/python
 RUN curl -o- "https://raw.githubusercontent.com/nvm-sh/nvm/v$NVM_VERSION/install.sh" | bash && rm -rf "$NVM_DIR/.cache"
 RUN npm i -g pnpm && rm -rf /root/.npm
@@ -18,4 +18,14 @@ RUN pnpm i -g regctl cloudflared esno serve
 RUN curl -fsSL https://get.docker.com | sh - && curl -o /bin/entry.sh https://raw.githubusercontent.com/docker-library/docker/master/docker-entrypoint.sh && chmod +x /bin/entry.sh
 
 ENTRYPOINT ["entry.sh"]
-CMD ["sh"]
+CMD ["bash"]
+
+FROM workspace as workspace-ssh
+
+# WARNING: DON'T FORGET TO CHANGE THE PASSWORD!!!
+RUN useradd --create-home --shell /bin/bash -G docker jacob && echo "jacob:jacob" | chpasswd && adduser jacob sudo && mkdir /home/jacob/.ssh && chown jacob:jacob /home/jacob/.ssh
+RUN apt update && apt install -y --no-install-recommends openssh-server && apt autoremove -y
+
+EXPOSE 22
+
+ENTRYPOINT [ "/sbin/init", "--log-level=err" ]
