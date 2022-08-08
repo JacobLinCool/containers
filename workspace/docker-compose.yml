@@ -15,10 +15,10 @@ services:
             args:
                 - USERNAME=jacob
         image: ghcr.io/jacoblincool/workspace:latest
-    workspace-ssh:
+    workspace-full:
         build:
             context: .
-            target: workspace-ssh
+            target: workspace-full
             args:
                 - USERNAME=jacob
-        image: ghcr.io/jacoblincool/workspace-ssh:latest
+        image: ghcr.io/jacoblincool/workspace-full:latest
