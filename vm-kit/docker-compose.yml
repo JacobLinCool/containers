@@ -2,10 +2,10 @@ version: "3.9"
 
 services:
     workspace:
-        image: ghcr.io/jacoblincool/workspace-ssh:latest
+        image: ghcr.io/jacoblincool/workspace:latest
         runtime: sysbox-runc
         container_name: workspace
-        command: dockerd > /dockerd.log 2>&1 & sleep infinity
+        command: sleep infinity
         volumes:
             - workspace-volume:/workspace
             - docker-cache:/var/lib/docker
