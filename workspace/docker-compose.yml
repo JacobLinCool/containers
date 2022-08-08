@@ -1,13 +1,24 @@
 version: "3.9"
 
 services:
+    workspace-lite:
+        build:
+            context: .
+            target: workspace-lite
+            args:
+                - USERNAME=jacob
+        image: ghcr.io/jacoblincool/workspace-lite:latest
     workspace:
         build:
             context: .
             target: workspace
+            args:
+                - USERNAME=jacob
         image: ghcr.io/jacoblincool/workspace:latest
     workspace-ssh:
         build:
             context: .
             target: workspace-ssh
+            args:
+                - USERNAME=jacob
         image: ghcr.io/jacoblincool/workspace-ssh:latest

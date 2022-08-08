@@ -1,30 +1,52 @@
-FROM ubuntu:focal as workspace
+FROM ubuntu:focal as workspace-pure
 
 ENV DEBIAN_FRONTEND=noninteractive
-ENV NVM_DIR "/root/.nvm"
-ENV NVM_VERSION "0.39.1"
-ENV NODE_VERSION "18.7.0"
-ENV NODE_PATH "$NVM_DIR/v$NODE_VERSION/lib/node_modules"
-ENV PATH "$NVM_DIR/versions/node/v$NODE_VERSION/bin:$PATH"
-ENV PNPM_HOME="/root/.local/share/pnpm"
-ENV PATH="$PNPM_HOME:$PATH"
 
 RUN rm -f /bin/sh && ln -s /bin/bash /bin/sh
-RUN apt update && apt upgrade -y && apt install -y git curl tree make python3 gcc g++ && apt autoremove -y
+RUN apt update && \
+    apt upgrade -y && \
+    apt install -y software-properties-common && \
+    add-apt-repository -y ppa:git-core/ppa && \
+    apt update && \
+    apt install -y git sudo bash-completion htop jq lsof less curl zip unzip tree make python3 build-essential && \
+    apt autoremove -y
 RUN rm -f /usr/bin/python && ln -s /usr/bin/python3 /usr/bin/python
-RUN curl -o- "https://raw.githubusercontent.com/nvm-sh/nvm/v$NVM_VERSION/install.sh" | bash && rm -rf "$NVM_DIR/.cache"
-RUN npm i -g pnpm && rm -rf /root/.npm
-RUN pnpm i -g regctl cloudflared esno serve
-RUN curl -fsSL https://get.docker.com | sh - && curl -o /bin/entry.sh https://raw.githubusercontent.com/docker-library/docker/master/docker-entrypoint.sh && chmod +x /bin/entry.sh
+COPY entry.sh /bin/entry.sh
+RUN chmod +x /bin/entry.sh
 
-ENTRYPOINT ["entry.sh"]
+ENTRYPOINT [ "entry.sh" ]
+CMD [ "sleep", "infinity" ]
+
+FROM workspace-pure as workspace-lite
+
+ARG USERNAME=jacob
+ENV HOME="/home/$USERNAME"
+ENV PNPM_HOME="$HOME/.local/share/pnpm"
+ENV PATH="$PNPM_HOME:$PATH"
+
+RUN useradd -l -u 1481 -G sudo -m -s /bin/bash $USERNAME && \
+    echo "$USERNAME:$USERNAME" | chpasswd && \
+    echo "$USERNAME ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
+WORKDIR $HOME
+RUN echo "PS1='\[\033[01;32m\]\u\[\033[00m\] \[\033[01;34m\]\w\[\033[00m\]\$(__git_ps1 \" (%s)\") $ '" >> .bashrc
+USER $USERNAME
+RUN curl -fsSL https://get.pnpm.io/install.sh | sh - && \
+    pnpm env use -g 18 && \
+    sudo rm -rf /tmp/*
+RUN pnpm i -g regctl cloudflared esno serve && \
+    cloudflared -v && \
+    regctl version
+
 CMD ["bash"]
+
+FROM workspace-lite as workspace
+
+RUN curl -fsSL https://get.docker.com | sudo sh - && \
+    sudo usermod -aG docker $USERNAME
 
 FROM workspace as workspace-ssh
 
-# WARNING: DON'T FORGET TO CHANGE THE PASSWORD!!!
-RUN useradd --create-home --shell /bin/bash -G docker jacob && echo "jacob:jacob" | chpasswd && adduser jacob sudo && mkdir /home/jacob/.ssh && chown jacob:jacob /home/jacob/.ssh
-RUN apt update && apt install -y --no-install-recommends openssh-server && apt autoremove -y
+RUN sudo apt update && sudo apt install -y --no-install-recommends openssh-server && sudo apt autoremove -y
 
 EXPOSE 22
 
