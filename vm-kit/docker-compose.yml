@@ -2,12 +2,12 @@ version: "3.9"
 
 services:
     workspace:
-        image: ghcr.io/jacoblincool/workspace:latest
+        image: ghcr.io/jacoblincool/workspace-full:latest
         runtime: sysbox-runc
         container_name: workspace
         command: sleep infinity
         volumes:
-            - workspace-volume:/workspace
+            - workspace-volume:/home
             - docker-cache:/var/lib/docker
         restart: always
 
