@@ -9,6 +9,9 @@ services:
         volumes:
             - workspace-volume:/home
             - docker-cache:/var/lib/docker
+        ports:
+          - "2222:2222"
+          - "50000-50030:50000-50030"
         restart: always
 
 volumes:
