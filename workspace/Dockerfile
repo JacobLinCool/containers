@@ -62,7 +62,7 @@ RUN apt update && \
     echo "ReadKMsg=no" >> /etc/systemd/journald.conf && \
     mkdir "$HOME/.ssh" && \
     chown $USERNAME:$USERNAME "$HOME/.ssh" && \
-    sed -i 's/^#Port 22$/Port $SSH_PORT/' /etc/ssh/sshd_config
+    sed -i "s/#Port 22/Port $SSH_PORT/" /etc/ssh/sshd_config
 COPY authorized_keys "$HOME/.ssh/authorized_keys"
 
 # Use stopsignal (instead of sigterm) to stop the container.
