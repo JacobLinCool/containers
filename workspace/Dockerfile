@@ -9,7 +9,7 @@ RUN rm -f /bin/sh && \
     apt install -y software-properties-common && \
     add-apt-repository -y ppa:git-core/ppa && \
     apt update && \
-    apt install -y git sudo bash-completion htop jq lsof less curl zip unzip tree make python3 build-essential && \
+    apt install -y git sudo bash-completion vim htop jq lsof less curl zip unzip tree make python3 build-essential && \
     apt autoremove -y && \
     rm -f /usr/bin/python && \
     ln -s /usr/bin/python3 /usr/bin/python
@@ -51,6 +51,8 @@ RUN curl -fsSL https://get.docker.com | sudo sh - && \
 FROM workspace as workspace-full
 
 ARG USERNAME=jacob
+ARG SSH_PORT=2222
+ENV HOME="/home/$USERNAME"
 ENV WORKSPACE_VARIANT=full
 
 USER root
@@ -59,7 +61,9 @@ RUN apt update && \
     apt autoremove -y && \
     echo "ReadKMsg=no" >> /etc/systemd/journald.conf && \
     mkdir "$HOME/.ssh" && \
-    chown $USERNAME:$USERNAME "$HOME/.ssh"
+    chown $USERNAME:$USERNAME "$HOME/.ssh" && \
+    sed -i 's/^#Port 22$/Port $SSH_PORT/' /etc/ssh/sshd_config
+COPY authorized_keys "$HOME/.ssh/authorized_keys"
 
 # Use stopsignal (instead of sigterm) to stop the container.
 STOPSIGNAL SIGRTMIN+3

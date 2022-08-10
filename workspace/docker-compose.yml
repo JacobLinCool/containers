@@ -21,4 +21,5 @@ services:
             target: workspace-full
             args:
                 - USERNAME=jacob
+                - SSH_PORT=2222
         image: ghcr.io/jacoblincool/workspace-full:latest
