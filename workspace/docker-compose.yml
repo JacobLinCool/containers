@@ -22,4 +22,7 @@ services:
             args:
                 - USERNAME=jacob
                 - SSH_PORT=2222
+        ports:
+          - "2222:2222"
+          - "50000-50030:50000-50030"
         image: ghcr.io/jacoblincool/workspace-full:latest
