@@ -1,0 +1,13 @@
+version: "3.9"
+
+services:
+    fontforge:
+        build:
+            context: .
+            target: fontforge
+        image: ghcr.io/jacoblincool/fontforge:latest
+    fontforge-convert:
+        build:
+            context: .
+            target: fontforge-convert
+        image: ghcr.io/jacoblincool/fontforge-convert:latest
