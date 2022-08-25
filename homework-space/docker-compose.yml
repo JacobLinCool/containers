@@ -1,0 +1,8 @@
+version: "3.9"
+
+services:
+    homework-space:
+        build:
+            context: .
+            target: homework-space
+        image: ghcr.io/jacoblincool/homework-space:latest
