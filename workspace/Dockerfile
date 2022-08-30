@@ -9,7 +9,7 @@ RUN rm -f /bin/sh && \
     apt install -y software-properties-common && \
     add-apt-repository -y ppa:git-core/ppa && \
     apt update && \
-    apt install -y git sudo bash-completion vim htop jq lsof less curl zip unzip tree make python3 build-essential && \
+    apt install -y git sudo bash-completion vim htop jq lsof less curl zip unzip tree make python3 build-essential valgrind && \
     apt autoremove -y && \
     rm -f /usr/bin/python && \
     ln -s /usr/bin/python3 /usr/bin/python
