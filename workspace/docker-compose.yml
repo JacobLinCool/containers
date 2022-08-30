@@ -1,6 +1,11 @@
 version: "3.9"
 
 services:
+    workspace-pure:
+        build:
+            context: .
+            target: workspace-pure
+        image: ghcr.io/jacoblincool/workspace-pure:latest
     workspace-lite:
         build:
             context: .
