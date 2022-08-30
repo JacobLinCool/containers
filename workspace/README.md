@@ -10,7 +10,7 @@ This image is the simplest.
 
 The following things are available:
 
-- Dev Tools: `git`, `make`, `node`, `python`, `gcc`, `g++`
+- Dev Tools: `git`, `make`, `node`, `python`, `gcc`, `g++`, `valgrind`
 - Commands: `sudo`, `htop`, `jq`, `lsof`, `less`, `curl`, `zip`, `unzip`, `tree`, `pnpm`, `regctl`, `cloudflared`, `esno`, `serve`
 
 ### `ghcr.io/jacoblincool/workspace`
